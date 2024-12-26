@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
     public int HedefStandSayisi;
     int TamamlananStandSayisi;
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))

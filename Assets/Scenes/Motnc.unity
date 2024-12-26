@@ -518,7 +518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AitOlduguStand: {fileID: 1251263595}
-  _AitOlduguCarSoketi: {fileID: 0}
+  _AitOlduguCarSoketi: {fileID: 214514912}
   HareketEdebilirMi: 0
   Renk: Red
   _GameManager: {fileID: 2039378096}
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AitOlduguStand: {fileID: 1251263595}
-  _AitOlduguCarSoketi: {fileID: 0}
+  _AitOlduguCarSoketi: {fileID: 2136146721}
   HareketEdebilirMi: 1
   Renk: Yellow
   _GameManager: {fileID: 2039378096}
@@ -1690,7 +1690,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AitOlduguStand: {fileID: 1251263595}
-  _AitOlduguCarSoketi: {fileID: 0}
+  _AitOlduguCarSoketi: {fileID: 901666931}
   HareketEdebilirMi: 0
   Renk: Yellow
   _GameManager: {fileID: 2039378096}
@@ -2550,7 +2550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AitOlduguStand: {fileID: 1423635789119234245}
-  _AitOlduguCarSoketi: {fileID: 0}
+  _AitOlduguCarSoketi: {fileID: 8637852609482759255}
   HareketEdebilirMi: 0
   Renk: Red
   _GameManager: {fileID: 2039378096}
@@ -2767,7 +2767,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AitOlduguStand: {fileID: 1423635789119234245}
-  _AitOlduguCarSoketi: {fileID: 0}
+  _AitOlduguCarSoketi: {fileID: 7270638471264507939}
   HareketEdebilirMi: 1
   Renk: Yellow
   _GameManager: {fileID: 2039378096}
@@ -2874,7 +2874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _AitOlduguStand: {fileID: 1423635789119234245}
-  _AitOlduguCarSoketi: {fileID: 0}
+  _AitOlduguCarSoketi: {fileID: 3673628695800704515}
   HareketEdebilirMi: 0
   Renk: Red
   _GameManager: {fileID: 2039378096}
