@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     private InputActionReference movementControl;
+    [SerializeField] private float AnimBlendSpeed = 8.9f;
     [SerializeField]
     private InputActionReference jumpControl;
     [SerializeField]
@@ -17,7 +18,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float rotationSpeed = 4f;
 
-    private Animator animator;
+    private Animator _animator;
+    private bool _hasAnimator;
+    private int _xVelHash;
+    private int _yVelHash;
+
+    
 
     private CharacterController controller;
     private Vector3 playerVelocity;
@@ -38,9 +44,12 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _hasAnimator = TryGetComponent<Animator>(out _animator);
         controller = gameObject.GetComponent<CharacterController>();
         cameraMainTransform = Camera.main.transform;
-        animator = GetComponent<Animator>();
+
+        _xVelHash = Animator.StringToHash("X_Velocity");
+        _yVelHash = Animator.StringToHash("Y_Velocity");
     }
 
     void Update()
@@ -57,7 +66,7 @@ public class PlayerController : MonoBehaviour
         controller.Move(move * Time.deltaTime * playerSpeed);
 
         float movementSpeed = move.magnitude;
-        animator.SetFloat("Speed", movementSpeed);
+        _animator.SetFloat("Speed", movementSpeed);
 
 
         if (jumpControl.action.triggered && groundedPlayer)
