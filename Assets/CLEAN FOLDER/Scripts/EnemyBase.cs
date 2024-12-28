@@ -10,10 +10,7 @@ public abstract class EnemyBase : MonoBehaviour
     protected enum EnemyState { Patrol, Chase, Attack };
     protected EnemyState currentState = EnemyState.Patrol;
 
-    public float DetectionRange;
-    public float AttackRange;
-    public float PatrolSpeed;
-    public float ChaseSpeed;
+    public EnemyDataSO enemyDataSO;
 
     public Transform[] PatrolPoints;
 
@@ -25,8 +22,8 @@ public abstract class EnemyBase : MonoBehaviour
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
-        agent.speed = PatrolSpeed;
-        animator.SetFloat("Speed", PatrolSpeed);
+        agent.speed = enemyDataSO.patrolSpeed;
+        animator.SetFloat("Speed", enemyDataSO.patrolSpeed);
     }
 
     private void Update()
@@ -37,26 +34,26 @@ public abstract class EnemyBase : MonoBehaviour
         {
             case EnemyState.Patrol:
                 Patrol();
-                if (distanceToPlayer <= DetectionRange)
+                if (distanceToPlayer <= enemyDataSO.detectionRange)
                 {
                     currentState = EnemyState.Chase;
-                    agent.speed = ChaseSpeed;
-                    animator.SetFloat("Speed", ChaseSpeed);
+                    agent.speed = enemyDataSO.chaseSpeed;
+                    animator.SetFloat("Speed", enemyDataSO.chaseSpeed);
                 }
                 break;
 
             case EnemyState.Chase:
                 Chase();
-                if (distanceToPlayer <= AttackRange)
+                if (distanceToPlayer <= enemyDataSO.attackRange)
                 {
                     currentState = EnemyState.Attack;
                     animator.SetTrigger("Attack");
                 }
-                else if (distanceToPlayer > DetectionRange)
+                else if (distanceToPlayer > enemyDataSO.detectionRange)
                 {
                     currentState = EnemyState.Patrol;
-                    agent.speed = PatrolSpeed;
-                    animator.SetFloat("Speed", PatrolSpeed);
+                    agent.speed = enemyDataSO.patrolSpeed;
+                    animator.SetFloat("Speed", enemyDataSO.patrolSpeed);
                 }
                 break;
 
