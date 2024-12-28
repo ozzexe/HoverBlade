@@ -19,10 +19,10 @@ public class Controller : MonoBehaviour
     private float rotationSpeed = 4f;
 
     [Header("Hoverboard Settings")]
-    public Transform hoverboardSeat; // Hoverboard üzerindeki pozisyon
-    public HBcontroller hoverboardController; // Hoverboard'un kontrol scripti
-    private bool isRiding = false; // Karakter hoverboard üzerinde mi?
-    private bool canMountHoverboard = false; // Hoverboard'a binebilir mi?
+    public Transform hoverboardSeat; 
+    public HBcontroller hoverboardController; 
+    private bool isRiding = false; 
+    private bool canMountHoverboard = false; 
 
     private Animator _animator;
     private bool _hasAnimator;
@@ -57,14 +57,12 @@ public class Controller : MonoBehaviour
     }
 
     void Update()
-    {
-        // Hoverboard'a binme/inme iþlemi
+    {       
         if (canMountHoverboard && Keyboard.current.eKey.wasPressedThisFrame)
         {
             ToggleHoverboard();
         }
-
-        // Eðer hoverboard üzerindeyse, karakterin kontrolü devre dýþý býrakýlýr
+        
         if (isRiding) return;
 
         groundedPlayer = controller.isGrounded;
@@ -81,8 +79,7 @@ public class Controller : MonoBehaviour
         float movementSpeed = move.magnitude;
 
         if (_hasAnimator)
-        {
-            // X and Y velocity parameters for animator
+        {            
             _animator.SetFloat(_xVelHash, movement.x);
             _animator.SetFloat(_yVelHash, movement.y);
             _animator.SetFloat("Speed", movementSpeed, AnimBlendSpeed, Time.deltaTime);
@@ -109,19 +106,17 @@ public class Controller : MonoBehaviour
         isRiding = !isRiding;
 
         if (isRiding)
-        {
-            // Karakter hoverboard'a biniyor
+        {            
             controller.enabled = false;
-            transform.position = hoverboardSeat.position; // Karakter hoverboard pozisyonuna geçiyor
-            transform.parent = hoverboardSeat; // Hoverboard'a baðlanýyor
-            hoverboardController.enabled = true; // Hoverboard kontrolü aktif
+            transform.position = hoverboardSeat.position; 
+            transform.parent = hoverboardSeat; 
+            hoverboardController.enabled = true; 
         }
         else
-        {
-            // Karakter hoverboard'dan iniyor
+        {            
             controller.enabled = true;
-            transform.parent = null; // Hoverboard'dan ayrýlýyor
-            hoverboardController.enabled = false; // Hoverboard kontrolü pasif
+            transform.parent = null; 
+            hoverboardController.enabled = false;
         }
     }
 

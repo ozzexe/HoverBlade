@@ -50,45 +50,37 @@ public class HBcontroller : MonoBehaviour
     }
 
     void FixedUpdate()
-    {
-        // Her bir anchor için kuvvet uygula
+    {        
         for (int i = 0; i < anchors.Length; i++)
         {
             ApplyForce(anchors[i], hits[i]);
         }
 
-        // Ýleri hareket
+        
         hb.AddForce(moveInput.y * moveForce * transform.forward, ForceMode.Force);
-
-        // Dönüþ
+        
         hb.AddTorque(moveInput.x * turnTorque * transform.up, ForceMode.Force);
     }
 
     void ApplyForce(Transform anchor, RaycastHit hit)
     {
-        Vector3 rayDirection = -anchor.up; // Ray'in yönü
-        Debug.DrawRay(anchor.position, rayDirection * 2f, Color.red); // Ray'i görselleþtir
+        Vector3 rayDirection = -anchor.up; 
+        Debug.DrawRay(anchor.position, rayDirection * 2f, Color.red); 
 
-        if (Physics.Raycast(anchor.position, rayDirection, out hit, 2f)) // Maksimum mesafe ayarla
+        if (Physics.Raycast(anchor.position, rayDirection, out hit, 2f)) 
         {
             float distanceToGround = hit.distance;
-
-            // Hoverboard'un hedef yüksekliði ve stabilizasyon kuvveti
-            float distanceError = targetHeight - distanceToGround; // Hedef yükseklik farký
-
-            // Stabilizasyon kuvveti (Proportional)
+            
+            float distanceError = targetHeight - distanceToGround; 
+            
             float stabilizationForce = distanceError * mult;
-
-            // Sönümleme kuvveti (Damping)
+            
             float dampingForce = -hb.GetPointVelocity(anchor.position).y * dampingFactor;
-
-            // Kuvveti birleþtir
+            
             float totalForce = stabilizationForce + dampingForce;
-
-            // Kuvvetin aþýrý olmasýný engelle
+            
             totalForce = Mathf.Clamp(totalForce, -maxForce, maxForce);
-
-            // Kuvveti uygulama
+            
             hb.AddForceAtPosition(transform.up * totalForce, anchor.position, ForceMode.Acceleration);
         }
         else
