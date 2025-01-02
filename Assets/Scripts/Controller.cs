@@ -19,10 +19,10 @@ public class Controller : MonoBehaviour
     private float rotationSpeed = 4f;
 
     [Header("Hoverboard Settings")]
-    public Transform hoverboardSeat; 
-    public HBcontroller hoverboardController; 
-    private bool isRiding = false; 
-    private bool canMountHoverboard = false; 
+    public Transform hoverboardSeat;
+    public HBcontroller hoverboardController;
+    private bool isRiding = false;
+    private bool canMountHoverboard = false;
 
     private Animator _animator;
     private bool _hasAnimator;
@@ -57,21 +57,28 @@ public class Controller : MonoBehaviour
     }
 
     void Update()
-    {       
-        if (canMountHoverboard && Keyboard.current.eKey.wasPressedThisFrame)
+    {
+        // Hoverboard'a binme/indiþ iþlemi
+        if (canMountHoverboard && Input.GetKeyDown(KeyCode.E))
         {
-            ToggleHoverboard();
+            if (!isRiding)
+                MountHoverboard();
+            else
+                DismountHoverboard();
         }
-        
-        if (isRiding) return;
 
+        if (isRiding) return; // Hoverboard'dayken hareket kontrolleri devre dýþý
+
+        // Karakter hareketi
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
         }
-        Vector2 movement = movementControl.action.ReadValue<Vector2>();
-        Vector3 move = new Vector3(movement.x, 0, movement.y);
+
+        // Burada `movement` yerine `movementInput` kullanalým
+        Vector2 movementInput = movementControl.action.ReadValue<Vector2>();
+        Vector3 move = new Vector3(movementInput.x, 0, movementInput.y);
         move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
         move.y = 0f;
         controller.Move(move * Time.deltaTime * playerSpeed);
@@ -79,9 +86,9 @@ public class Controller : MonoBehaviour
         float movementSpeed = move.magnitude;
 
         if (_hasAnimator)
-        {            
-            _animator.SetFloat(_xVelHash, movement.x);
-            _animator.SetFloat(_yVelHash, movement.y);
+        {
+            _animator.SetFloat(_xVelHash, movementInput.x);
+            _animator.SetFloat(_yVelHash, movementInput.y);
             _animator.SetFloat("Speed", movementSpeed, AnimBlendSpeed, Time.deltaTime);
         }
 
@@ -93,48 +100,75 @@ public class Controller : MonoBehaviour
         playerVelocity.y += gravityValue * Time.deltaTime;
         controller.Move(playerVelocity * Time.deltaTime);
 
-        if (movement != Vector2.zero)
+        if (movementInput != Vector2.zero)
         {
-            float targetAngle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(movementInput.x, movementInput.y) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
             Quaternion rotation = Quaternion.Euler(0f, targetAngle, 0f);
             transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
         }
     }
 
-    private void ToggleHoverboard()
+    private void MountHoverboard()
     {
-        isRiding = !isRiding;
+        isRiding = true;
+        controller.enabled = false;  // CharacterController'ý devre dýþý býrak
 
-        if (isRiding)
-        {            
-            controller.enabled = false;
-            transform.position = hoverboardSeat.position; 
-            transform.parent = hoverboardSeat; 
-            hoverboardController.enabled = true; 
+        // Null kontrolü
+        if (hoverboardSeat != null)
+        {
+            transform.position = hoverboardSeat.position;
+            transform.rotation = hoverboardSeat.rotation; // Karakterin dönüþünü doðru þekilde ayarla
+            transform.parent = hoverboardSeat; // Karakter hoverboard'ýn altýna yerleþiyor
+            hoverboardController.Mount();
         }
         else
-        {            
-            controller.enabled = true;
-            transform.parent = null; 
-            hoverboardController.enabled = false;
+        {
+            Debug.LogError("Hoverboard Seat not assigned!");
         }
+
+        hoverboardController.SetControlled(true); // Hoverboard'ý kontrol etmeye baþla
+
+        if (_hasAnimator)
+        {
+            _animator.SetFloat("Speed", 0);
+        }
+    }
+
+    private void DismountHoverboard()
+    {
+        isRiding = false;
+        controller.enabled = true;  // CharacterController'ý tekrar aktif et
+        transform.parent = null;  // Karakter hoverboard'dan ayrýlýr
+        hoverboardController.SetControlled(false); // Hoverboard kontrolünü sonlandýr
+        hoverboardController.Dismount();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Hoverboard"))
+        // Hoverboard ile etkileþime girme
+        if (other.CompareTag("Board"))
         {
-            canMountHoverboard = true;
+            Debug.Log("Hoverboard ile etkileþime geçildi");
+            canMountHoverboard = true;  // Hoverboard ile etkileþime geçilebilir
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Hoverboard"))
+        if (other.CompareTag("Board"))
         {
-            canMountHoverboard = false;
+            Debug.Log("Hoverboard'dan uzaklaþýldý");
+            canMountHoverboard = false;  // Hoverboard'dan uzaklaþýldýðýnda etkileþim sona erer
         }
     }
 }
+
+
+
+
+
+
+
+
 
 
