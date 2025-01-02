@@ -8,22 +8,22 @@ public class HBcontroller : MonoBehaviour
     private Rigidbody hb;
 
     [Header("Hoverboard Settings")]
-    public float mult = 10f; // Yükselme kuvveti çarpaný
-    public float moveForce = 500f; // Ýleri hareket kuvveti
-    public float turnTorque = 200f; // Dönüþ kuvveti
+    public float mult = 10f; 
+    public float moveForce = 500f; 
+    public float turnTorque = 200f; 
 
     [Header("Stabilization Settings")]
-    public float targetHeight = 0.5f; // Hoverboard'un hedef yüksekliði (yerden uzaklýk)
-    public float dampingFactor = 0.5f; // Stabilizasyon sönümleme faktörü (yavaþlatma)
-    public float maxForce = 20f; // Kuvvetin maksimum limiti
+    public float targetHeight = 0.5f; 
+    public float dampingFactor = 0.5f; 
+    public float maxForce = 20f; 
 
     [Header("Input Settings")]
-    public InputActionReference moveControl; // Hareket input'u
+    public InputActionReference moveControl; 
 
-    public Transform[] anchors = new Transform[4]; // Hoverboard'un raycast noktalarý
-    private RaycastHit[] hits = new RaycastHit[4]; // Raycast sonuçlarý
+    public Transform[] anchors = new Transform[4]; 
+    private RaycastHit[] hits = new RaycastHit[4]; 
 
-    private Vector2 moveInput; // Input System'den gelen hareket vektörü
+    private Vector2 moveInput; 
 
     void Start()
     {
@@ -55,7 +55,6 @@ public class HBcontroller : MonoBehaviour
         {
             ApplyForce(anchors[i], hits[i]);
         }
-
         
         hb.AddForce(moveInput.y * moveForce * transform.forward, ForceMode.Force);
         
