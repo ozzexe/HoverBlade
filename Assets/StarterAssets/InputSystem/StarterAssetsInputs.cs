@@ -16,7 +16,14 @@ namespace StarterAssets
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
-		[Header("Mouse Cursor Settings")]
+        public bool hoverboardToggle;
+
+        private void Update()
+        {
+            hoverboardToggle = Input.GetKeyDown(KeyCode.E);  // 'E' tuþuna basýldýðýnda hoverboardToggle deðiþkenini true yapar
+        }
+
+        [Header("Mouse Cursor Settings")]
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
