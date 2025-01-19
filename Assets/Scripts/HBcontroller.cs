@@ -26,6 +26,11 @@ public class HBcontroller : MonoBehaviour
     private Vector2 moveInput;
     private bool isControlled = false; // Hoverboard kontrol durumunu takip eder
 
+    [Header("Call Settings")]
+    public float callSpeed = 5f; // Hoverboard'un çağrıldığında hareket hızı
+    private bool isBeingCalled = false; // Hoverboard'un çağrıldığı durumu kontrol eder
+    private Vector3 callTargetPosition; // Hoverboard'un hareket edeceği hedef pozisyon
+
     void Start()
     {
         hb = GetComponent<Rigidbody>();
@@ -52,6 +57,13 @@ public class HBcontroller : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isBeingCalled)
+        {
+            // Hoverboard'u hedef pozisyona taşır
+            MoveToCallTarget();
+            return;
+        }
+
         // Hoverboard sadece kontrol edildiğinde çalışır
         if (!isControlled) return;
 
@@ -89,9 +101,9 @@ public class HBcontroller : MonoBehaviour
     {
         isControlled = controlStatus;
 
-        // Eğer kontrol ediliyorsa fizik motorunu etkin tut
         if (isControlled)
         {
+            isBeingCalled = false; // Çağrılma durumunu iptal et
             hb.isKinematic = false; // Hoverboard hareket edebilir
         }
         else
@@ -101,30 +113,32 @@ public class HBcontroller : MonoBehaviour
         }
     }
 
-    // Hoverboard'a binme için çağrılacak fonksiyon
-    private void OnTriggerEnter(Collider other)
+    // Hoverboard'u belirli bir pozisyona çağır
+    public void CallToPosition(Vector3 targetPosition)
     {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Karakter Hoverboard'a yaklaştı.");
-        }
+        isBeingCalled = true;
+        callTargetPosition = targetPosition;
+        hb.isKinematic = false; // Hareket edebilmesi için fizik motorunu etkinleştir
     }
 
-    // Hoverboard'dan inme işlemi için
-    private void OnTriggerExit(Collider other)
+    // Hoverboard'u çağırma hedef pozisyonuna taşır
+    private void MoveToCallTarget()
     {
-        if (other.CompareTag("Player"))
+        Vector3 direction = (callTargetPosition - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, callTargetPosition);
+
+        if (distance > 0.1f)
         {
-            Debug.Log("Karakter Hoverboard'dan uzaklaştı.");
+            // Hedef pozisyona doğru hareket et
+            hb.linearVelocity = direction * callSpeed;
+        }
+        else
+        {
+            // Hedefe ulaşıldıysa hareketi durdur
+            hb.linearVelocity = Vector3.zero;
+            isBeingCalled = false;
+            hb.isKinematic = true; // Hedefte durunca sabitlenir
         }
     }
 }
-
-
-
-
-
-
-
-
 

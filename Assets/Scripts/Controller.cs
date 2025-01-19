@@ -10,19 +10,27 @@ public class Controller : MonoBehaviour
     [SerializeField]
     private InputActionReference jumpControl;
     [SerializeField]
-    public float playerSpeed = 2.0f;
+    private InputActionReference runControl; // Run input action
+    [SerializeField]
+    public float playerSpeed = 4.0f;
     [SerializeField]
     private float jumpHeight = 1.0f;
     [SerializeField]
     private float gravityValue = -9.81f;
     [SerializeField]
     private float rotationSpeed = 4f;
+    [SerializeField]
+    public float runSpeed = 9.0f; // Run speed multiplier
 
     [Header("Hoverboard Settings")]
     public Transform hoverboardSeat;
     public HBcontroller hoverboardController;
     private bool isRiding = false;
     private bool canMountHoverboard = false;
+
+    [Header("Hoverboard Call Settings")]
+    public Transform hoverboardCallPosition; // Hoverboard'un geleceði hedef pozisyon
+    public KeyCode callHoverboardKey = KeyCode.H; // Hoverboard'u çaðýrmak için kullanýlacak tuþ
 
     private Animator _animator;
     private bool _hasAnimator;
@@ -34,16 +42,20 @@ public class Controller : MonoBehaviour
     private bool groundedPlayer;
     private Transform cameraMainTransform;
 
+    private bool isRunning = false; // Koþma durumu
+
     private void OnEnable()
     {
         movementControl.action.Enable();
         jumpControl.action.Enable();
+        runControl.action.Enable();
     }
 
     private void OnDisable()
     {
         movementControl.action.Disable();
         jumpControl.action.Disable();
+        runControl.action.Disable();
     }
 
     private void Start()
@@ -58,6 +70,12 @@ public class Controller : MonoBehaviour
 
     void Update()
     {
+        // Hoverboard'u çaðýrma
+        if (Input.GetKeyDown(callHoverboardKey) && hoverboardController != null)
+        {
+            hoverboardController.CallToPosition(hoverboardCallPosition.position);
+        }
+
         // Hoverboard'a binme/indiþ iþlemi
         if (canMountHoverboard && Input.GetKeyDown(KeyCode.E))
         {
@@ -69,6 +87,9 @@ public class Controller : MonoBehaviour
 
         if (isRiding) return; // Hoverboard'dayken hareket kontrolleri devre dýþý
 
+        // Koþma kontrolü
+        isRunning = runControl.action.ReadValue<float>() > 0.1f; // Left Shift tuþuna basýlý olup olmadýðýný kontrol et
+
         // Karakter hareketi
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer && playerVelocity.y < 0)
@@ -76,12 +97,14 @@ public class Controller : MonoBehaviour
             playerVelocity.y = 0f;
         }
 
-        // Burada `movement` yerine `movementInput` kullanalým
         Vector2 movementInput = movementControl.action.ReadValue<Vector2>();
         Vector3 move = new Vector3(movementInput.x, 0, movementInput.y);
         move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
         move.y = 0f;
-        controller.Move(move * Time.deltaTime * playerSpeed);
+
+        // Koþma hýzýný uygula
+        float currentSpeed = isRunning ? runSpeed : playerSpeed;
+        controller.Move(move * Time.deltaTime * currentSpeed);
 
         float movementSpeed = move.magnitude;
 
@@ -90,6 +113,7 @@ public class Controller : MonoBehaviour
             _animator.SetFloat(_xVelHash, movementInput.x);
             _animator.SetFloat(_yVelHash, movementInput.y);
             _animator.SetFloat("Speed", movementSpeed, AnimBlendSpeed, Time.deltaTime);
+            _animator.SetBool("IsRunning", isRunning); // Koþma animasyonunu tetikle
         }
 
         if (jumpControl.action.triggered && groundedPlayer)
@@ -111,14 +135,13 @@ public class Controller : MonoBehaviour
     private void MountHoverboard()
     {
         isRiding = true;
-        controller.enabled = false;  // CharacterController'ý devre dýþý býrak
+        controller.enabled = false;
 
-        // Null kontrolü
         if (hoverboardSeat != null)
         {
             transform.position = hoverboardSeat.position;
-            transform.rotation = hoverboardSeat.rotation; // Karakterin dönüþünü doðru þekilde ayarla
-            transform.parent = hoverboardSeat; // Karakter hoverboard'ýn altýna yerleþiyor
+            transform.rotation = hoverboardSeat.rotation;
+            transform.parent = hoverboardSeat;
             hoverboardController.Mount();
         }
         else
@@ -126,7 +149,7 @@ public class Controller : MonoBehaviour
             Debug.LogError("Hoverboard Seat not assigned!");
         }
 
-        hoverboardController.SetControlled(true); // Hoverboard'ý kontrol etmeye baþla
+        hoverboardController.SetControlled(true);
 
         if (_hasAnimator)
         {
@@ -137,19 +160,18 @@ public class Controller : MonoBehaviour
     private void DismountHoverboard()
     {
         isRiding = false;
-        controller.enabled = true;  // CharacterController'ý tekrar aktif et
-        transform.parent = null;  // Karakter hoverboard'dan ayrýlýr
-        hoverboardController.SetControlled(false); // Hoverboard kontrolünü sonlandýr
+        controller.enabled = true;
+        transform.parent = null;
+        hoverboardController.SetControlled(false);
         hoverboardController.Dismount();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Hoverboard ile etkileþime girme
         if (other.CompareTag("Board"))
         {
             Debug.Log("Hoverboard ile etkileþime geçildi");
-            canMountHoverboard = true;  // Hoverboard ile etkileþime geçilebilir
+            canMountHoverboard = true;
         }
     }
 
@@ -158,10 +180,11 @@ public class Controller : MonoBehaviour
         if (other.CompareTag("Board"))
         {
             Debug.Log("Hoverboard'dan uzaklaþýldý");
-            canMountHoverboard = false;  // Hoverboard'dan uzaklaþýldýðýnda etkileþim sona erer
+            canMountHoverboard = false;
         }
     }
 }
+
 
 
 

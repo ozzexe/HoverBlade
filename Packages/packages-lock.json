@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.beykozedu.fsm": {
-      "version": "https://github.com/hsencan03/FSM-UPM.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "1ae6be317d9b6089936cf707aba3ece5bffed0ac"
-    },
     "com.unity.adaptiveperformance": {
       "version": "5.1.0",
       "depth": 1,

@@ -17,6 +17,8 @@ namespace StarterAssets
         [Range(0.0f, 0.3f)] public float RotationSmoothTime = 0.12f;
         public float SpeedChangeRate = 10.0f;
 
+
+
         [Space(10)]
         public float JumpHeight = 1.2f;
         public float Gravity = -15.0f;
