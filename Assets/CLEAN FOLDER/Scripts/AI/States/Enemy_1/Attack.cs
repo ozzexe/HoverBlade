@@ -45,7 +45,7 @@ public class Attack : BaseState<EnemyAIData>
                 break;
 
             StateData.EnemyAnimator.SetTrigger(OnAttack);
-            StateData.playerHealthComp.TakeDamage(1);
+            StateData.playerHealthComp.TakeDamage(5);
             await Task.Delay(TimeSpan.FromSeconds(4));
             
         }

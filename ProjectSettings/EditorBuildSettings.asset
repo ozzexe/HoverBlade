@@ -6,8 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: "Assets/Scenes/Aray\xFCz.unity"
+    guid: b3afbc368a8371544bede35ab1764808
+  - enabled: 1
+    path: Assets/Scenes/HoverBladeLevel.unity
+    guid: 7d276b91e35f8ce4f87eaffce0814895
   m_configObjects:
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 9227e98e4b6e046c5b175924d7b5d070, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

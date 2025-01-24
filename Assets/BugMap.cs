@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BugMap : MonoBehaviour
 {
@@ -7,7 +8,7 @@ public class BugMap : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Destroy(other.gameObject);
+            SceneManager.LoadScene("Arayüz");
         }
     }
 

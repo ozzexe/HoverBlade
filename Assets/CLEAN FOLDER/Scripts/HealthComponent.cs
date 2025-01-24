@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class HealthComponent : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class HealthComponent : MonoBehaviour
     private void Start()
     {
         Health = health;
-        animator = GetComponent<Animator>(); // Animator'ý alýyoruz
+        animator = GetComponent<Animator>(); 
     }
 
     public void TakeDamage(int damageAmount)
@@ -23,12 +24,12 @@ public class HealthComponent : MonoBehaviour
         // Hasar alýndýðýnda animasyonu tetikle
         if (animator != null)
         {
-            animator.SetTrigger("TakeDamage"); // "TakeDamage" trigger'ýný tetikle
+            animator.SetTrigger("TakeDamage"); 
         }
 
         if (Health == 0)
         {
-            StartCoroutine(Die()); // Ölüm anýnda coroutine baþlat
+            StartCoroutine(Die()); 
         }
     }
 
@@ -38,20 +39,27 @@ public class HealthComponent : MonoBehaviour
         {
             DisableMovement();
 
-            animator.SetTrigger("Die"); // "Die" trigger'ýný tetikle
+            animator.SetTrigger("Die"); 
 
-            // Ölüm animasyonunun bitmesini bekle
+            
             yield return new WaitForSeconds(3);
         }
 
-        Destroy(gameObject);
+        if (CompareTag("Player")) 
+        {
+            SceneManager.LoadScene("Arayüz"); 
+        }
+        else
+        {
+            Destroy(gameObject); 
+        }
 
-        
+
     }
 
     private void DisableMovement()
     {
-        // Yalnýzca hareket bileþenlerini devre dýþý býrak
+        
         var navMeshAgent = GetComponent<NavMeshAgent>();
         if (navMeshAgent != null)
         {
@@ -61,7 +69,7 @@ public class HealthComponent : MonoBehaviour
         var rigidbody = GetComponent<Rigidbody>();
         if (rigidbody != null)
         {
-            rigidbody.isKinematic = true; // Rigidbody'yi durdur
+            rigidbody.isKinematic = true; 
         }
 
     }
