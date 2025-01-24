@@ -8,6 +8,7 @@ TagManager:
   - CinemachineTarget
   - Board
   - HoverBoard
+  - Enemy
   layers:
   - Default
   - TransparentFX
